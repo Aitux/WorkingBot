@@ -1,14 +1,21 @@
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.security.auth.login.LoginException;
 
-import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.MessageBuilder;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.entities.impl.JDAImpl;
+
 public class BotOMatic {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		JDABuilder jda = new JDABuilder();
-		jda.setBotToken("MTc5OTkwMDg2MTQwNjkwNDMy.ChZmkA.EBzlH81byYdUtMYQeLdMYLT03o8");
+		JDAImpl jda = new JDAImpl(true);
+		MessageBuilder mb = new MessageBuilder();
+		List<User> connected = new ArrayList<>();
 		try {
-			jda.buildAsync();
+			jda.login("MTc5OTkwMDg2MTQwNjkwNDMy.ChZmkA.EBzlH81byYdUtMYQeLdMYLT03o8");
 		} catch (LoginException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -16,6 +23,22 @@ public class BotOMatic {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+		
+		connected = jda.getUsers();
+		System.out.println(connected.toString());
+		/*	jda.addListener(new ListenerAdapter() {
 
+			@Override
+			public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+				// TODO Auto-generated method stub
+				super.onPrivateMessageReceived(event);
+
+				mb.appendString("HelloWorld");
+				mb.build();
+			}
+
+		});
+
+	}*/
+	}
 }
