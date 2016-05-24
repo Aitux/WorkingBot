@@ -1,33 +1,48 @@
 package tps;
 
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.ShutdownEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
 public class DiscordMessageListener extends ListenerAdapter{
 
-	public void onMessageReceived(MessageReceivedEvent e){
-		StringBuilder builder = new StringBuilder();
-		boolean isPrivate = e.isPrivate();
-		if(!isPrivate){
-			System.out.printf("[%s][%s]\t%s: %s\n", e.getGuild().getName(), e.getTextChannel().getName(),
-             e.getAuthor().getUsername(), e.getMessage().getContent());
-			if(e.getMessage().getContent().equals("!insulteMoi")){
-			DiscordStream stream = new DiscordStream(e.getTextChannel());
+	
+	@Override
+	public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
+		// TODO Auto-generated method stub
+		super.onGuildMessageReceived(e);
+		DiscordStream stream = new DiscordStream(e.getChannel());
+		if(e.getMessage().getContent().equals("!insulteMoi")){
 			stream.printToDiscord(e.getAuthor().getUsername() + " il semblerait que tu aimes te faire insulter ma salope !");
-			}
-			
-			if(e.getAuthor().getUsername().equals("norbana")){
-				DiscordStream stream = new DiscordStream(e.getTextChannel());
-				stream.printToDiscord("Tu n'as pas le droit à la parole ici minus !");
-			}
-			
+		}
+	/*	if(e.getAuthor().getUsername().equals("norbana")){
+			e.getMessage().deleteMessage();
+			stream.printToDiscord(e.getAuthor().getUsername() + " __vous n'avez pas le droit à la parole ici !__");
+			stream.setPrivate(e.getAuthor().getPrivateChannel());
+			stream.printPrivate("Veuillez ne pas troubler l'ordre sur le serveur sous peine de banissement !");
+		}*/
+		
+	}
 
-		}else{
-			 System.out.printf("[PM]\t%s: %s\n", e.getAuthor().getUsername(), e.getMessage().getContent());
-			 
+
+
+	@Override
+	public void onShutdown(ShutdownEvent event) {
+		// TODO Auto-generated method stub
+		super.onShutdown(event);
+	}
+
+	@Override
+	public void onPrivateMessageReceived(PrivateMessageReceivedEvent e) {
+		// TODO Auto-generated method stub
+		super.onPrivateMessageReceived(e);
+
+		DiscordStream stream = new DiscordStream(e.getChannel(), true);
+		if(!e.getAuthor().isBot()){
+			if(e.getMessage().getContent().equals("!coquin")) stream.printPrivate("https://www.instagram.com/p/BFXjc5QIV9Z/?taken-by=nickygile");
+			//stream.printPrivate("Je n'aime pas que l'on me parle en privé ca me gène :S");
 		}
 	}
 
-	
 }

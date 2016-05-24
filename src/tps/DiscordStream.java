@@ -2,12 +2,14 @@ package tps;
 
 import java.io.PrintStream;
 
+import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.entities.TextChannel;
 
 public class DiscordStream {
     private TextChannel channel;
     private RedirectStream systemOut;
     private RedirectStream systemErr;
+    private PrivateChannel PrivChan;
 
     /**
      * Creates a new instance of the DiscordStream along with
@@ -18,9 +20,47 @@ public class DiscordStream {
      * @throws NullPointerException
      *          If the provided TextChannel is null.
      */
+    
+    public DiscordStream(PrivateChannel channel, boolean enable){
+    	 
+    	setPrivate(channel);
+    	systemOut = new RedirectStream(System.out)
+         {
+             @Override
+             protected void enableRedirect(boolean enable)
+             {
+                 if (enable)
+                 {
+                     System.setOut(this);
+                 }
+                 else
+                 {
+                     System.setOut(getOut());
+                 }
+             }
+         };
+         systemErr = new RedirectStream(System.err)
+         {
+             @Override
+             protected void enableRedirect(boolean enable)
+             {
+                 if (enable)
+                 {
+                     System.setErr(this);
+                 }
+                 else
+                 {
+                     System.setErr(getOut());
+                 }
+             }
+         };
+         enableRedirect(enable);
+    }
+    
     public DiscordStream(TextChannel channel)
     {
         this(channel, false);
+        
     }
 
     /**
@@ -92,6 +132,14 @@ public class DiscordStream {
         systemOut.println(string);
     }
 
+    public void printPrivate(String s){
+    	PrivChan.sendMessage(s);
+    }
+    
+    public void setPrivate(PrivateChannel s){
+    	this.PrivChan = s;
+    }
+    
     /**
      * Sends a break line to both the Console and to the Discord {@link net.dv8tion.jda.entities.TextChannel TextChannel}.
      */
