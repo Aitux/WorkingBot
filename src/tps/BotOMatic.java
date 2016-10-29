@@ -34,12 +34,12 @@ public class BotOMatic {
 			jda.addEventListener(new DiscordMessageListener() {
 				public void onGuildMessageReceived(GuildMessageReceivedEvent e) {
 					super.onGuildMessageReceived(e);
+					AccountManager ac = jda.getAccountManager();
 					if (e.getMessage().getContent().contains("!shutdown")) {
 						jda.shutdown();
 					}
 					if (e.getMessage().getContent().contains("!update")) {
 						if (e.getAuthor().getId().equals(prop.getProperty("sudoId"))) {
-							AccountManager ac = jda.getAccountManager();
 							if (e.getMessage().getContent().contains("Data")) {
 								File img = new File(prop.getProperty("imgPath"));
 								ac.setGame("Funny Tricks");
@@ -58,6 +58,14 @@ public class BotOMatic {
 							} else if (e.getMessage().getContent().contains("reset")) {
 								ac.setStreaming(null, null);
 							}
+						}
+					}
+					if(e.getMessage().getContent().contains("!game")){
+						String game = e.getMessage().getContent().split("\\s+")[1];
+						if(!game.equals("")){
+							ac.setGame(game);
+						}else{
+							ac.setGame(null);
 						}
 					}
 				}
