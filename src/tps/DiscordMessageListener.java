@@ -1,16 +1,14 @@
 package tps;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.VoiceChannel;
 import net.dv8tion.jda.entities.impl.VoiceChannelImpl;
-import net.dv8tion.jda.events.ShutdownEvent;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+import net.dv8tion.jda.managers.ChannelManager;
 import net.dv8tion.jda.managers.GuildManager;
 
 public class DiscordMessageListener extends ListenerAdapter {
@@ -23,11 +21,19 @@ public class DiscordMessageListener extends ListenerAdapter {
 		super.onGuildMessageReceived(e);
 		boolean flag = false;
 		DiscordStream stream = new DiscordStream(e.getChannel());
+		GuildManager gm = new GuildManager(e.getGuild());
 		setChannel(e, stream);
 		if (!e.getAuthor().isBot()) {
 			if (e.getMessage().getContent().contains("!moveTo")) {
 				String channel = "";
+				try{
 				channel = e.getMessage().getContent().split("\\s+")[1];
+				}catch(IndexOutOfBoundsException ex){
+					channel = "179980434015387650";
+					flag = true;
+					stream.printToDiscord(
+							"Je n'ai pas compris, veuillez vous assurer de suivre la syntaxe suivante: ```!moveTo channel``` :name_badge: Avec 1 seul espace.");
+				}
 				// stream.printToDiscord(e.getMessage().getContent());
 				if (!channel.equals("")) {
 					for (int i = 0; i < voiceList.size(); i++) {
@@ -40,10 +46,10 @@ public class DiscordMessageListener extends ListenerAdapter {
 						channel = "";
 				} else {
 					stream.printToDiscord(
-							"Je n'ai pas compris, veuillez vous assurer de suivre la syntaxe suivante: ```!moveTo channel``` :exclamation: Avec 1 seul espace.");
+							"Je n'ai pas compris, veuillez vous assurer de suivre la syntaxe suivante: ```!moveTo channel``` :name_badge: Avec 1 seul espace.");
 					System.out.println("Channel = [" + channel + "]");
 				}
-				GuildManager gm = new GuildManager(e.getGuild());
+				
 				Guild g = e.getGuild();
 				if (e.getGuild().getVoiceStatusOfUser(e.getAuthor()).inVoiceChannel()) {
 					if (!channel.equals("")) {
@@ -57,7 +63,7 @@ public class DiscordMessageListener extends ListenerAdapter {
 				}
 			}
 			
-			if(e.getMessage().getContent().contains("!shutdown")){
+			if(e.getMessage().getContent().contains("!clean")){
 				
 			}
 		}
@@ -88,7 +94,7 @@ public class DiscordMessageListener extends ListenerAdapter {
 			stream.printPrivate("Je n'aime pas que l'on me parle en privé ca me gène :flushed:");
 		}
 	}
-
+	
 	private void setChannel(GuildMessageReceivedEvent e, DiscordStream stream) {
 		voiceList = e.getGuild().getVoiceChannels();
 	}

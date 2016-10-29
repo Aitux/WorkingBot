@@ -42,7 +42,7 @@ public class BotOMatic {
 						if (e.getAuthor().getId().equals(prop.getProperty("sudoId"))) {
 							if (e.getMessage().getContent().contains("Data")) {
 								File img = new File(prop.getProperty("imgPath"));
-								ac.setGame("Funny Tricks");
+								ac.setGame("Mise à jour");
 								ac.setUsername("Administrateur");
 								try {
 									ac.setAvatar(AvatarUtil.getAvatar(img));
@@ -76,6 +76,8 @@ public class BotOMatic {
 
 				}
 			});
+			jda.addEventListener(new GuildMemberListener());
+			
 		} catch (LoginException | IllegalArgumentException | InterruptedException e) {
 			e.printStackTrace();
 			System.exit(0);
